@@ -1,6 +1,6 @@
 This solution contains an ASP.NET MVC API project. The API contains a single controller which has a single endpoint (action method).
 
-The endpoint can be accessed using the following URL...
+The endpoint can be accessed using the following URL..
 
 http://{your binding}/patients/{patientId}/episodes
 
