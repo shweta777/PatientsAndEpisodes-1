@@ -107,7 +107,7 @@ namespace RestApi.UnitTests
         public void GetPatientsTest()
         {
             var patientId = 0;
-            var result = patientsController.Get(patientId);
+            var result = patientsController.Get(patientId); 
             Assert.NotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.NotFound);
             Assert.AreEqual(((System.Net.Http.ObjectContent)result.Content).Value, $"Patient not found with patientId :{patientId}.");
@@ -117,12 +117,24 @@ namespace RestApi.UnitTests
             Assert.NotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
             Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
-
+            
             patientId = 2;
             result = patientsController.Get(patientId);
             Assert.NotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
             Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
+
+            patientId = 3;
+            result = patientsController.Get(patientId);
+            Assert.NotNull(result.StatusCode);
+            Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
+            Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
+
+            patientId = 4;
+            result = patientsController.Get(patientId);
+            Assert.NotNull(result.StatusCode);
+            Assert.AreEqual(result.StatusCode, HttpStatusCode.NotFound);
+            Assert.AreEqual(((System.Net.Http.ObjectContent)result.Content).Value, $"Patient not found with patientId :{patientId}.");
 
             patientId = int.MinValue;
             result = patientsController.Get(patientId);
