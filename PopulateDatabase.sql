@@ -1,6 +1,6 @@
 USE [developerassessment]
 GO
-/****** Object:  User [RestApi]    Script Date: 18/02/2016 17:28:01 ******/
+/****** Object:  User [RestApi]    Script Date: 18/02/2016 17:28:02 ******/
 CREATE USER [RestApi] FOR LOGIN [RestApi] WITH DEFAULT_SCHEMA=[dbo]
 GO
 /****** Object:  Table [dbo].[Episode]    Script Date: 18/02/2016 17:28:04 ******/
