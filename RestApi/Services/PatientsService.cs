@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,7 +12,7 @@ namespace RestApi.Services
         private IDatabaseContext databaseContext;
         public PatientsService(IDatabaseContext databaseContext)
         {
-            this.databaseContext = databaseContext; 
+            this.databaseContext = databaseContext;
         }
 
         public IList<Patient> GetPatients()
@@ -31,7 +31,7 @@ namespace RestApi.Services
                     patient.ForEach(x => x.Episodes = episodes);
                     return patient;
                 }
-            } 
+            }
 
             return null;
         }
