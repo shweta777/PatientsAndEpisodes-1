@@ -1,50 +1,33 @@
-﻿using System.Reflection;
-using System.Web.Http.Dependencies;
-using Autofac;
-using Autofac.Integration.WebApi;
+using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.SubSystems.Configuration;
+using Castle.Windsor;
 using RestApi.Interfaces;
 using RestApi.Models;
 using RestApi.Services;
+using System.Web.Http;
+using System.Web.Http.Controllers;
 
-namespace RestApi.DependencyInjection
+namespace RestApi.Windsor
 {
-    public class ApplicationDependencyContainer
+    /// <summary> Dependency Conventions </summary>
+    public class ApplicationDependencyContainer : IWindsorInstaller
     {
-        private readonly ContainerBuilder _autofacContainerBuilder = new ContainerBuilder();
-
-        private IContainer _container;
-
-        public ApplicationDependencyContainer(Assembly apiAssembly)
+        /// <summary> </summary>
+        /// <param name="container"> </param>
+        /// <param name="store"> </param>
+        public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            _autofacContainerBuilder.RegisterApiControllers(apiAssembly);
-            RegisterDependencies();
-        }
+            container.Register(Classes
+                .FromThisAssembly()
+                .BasedOn<IHttpController>()
+                .ConfigureFor<ApiController>(c => c.PropertiesRequire(pi => false))
+                .LifestyleTransient());
 
-        private void RegisterDependencies()
-        {
-            _autofacContainerBuilder.RegisterType<PatientContext>().As<IDatabaseContext>();
-            _autofacContainerBuilder.RegisterType<PatientsService>().As<IPatientsService>();
-            _autofacContainerBuilder.RegisterType<EpisodesService>().As<IEpisodesService>();
-        }
-
-        public IDependencyResolver WebApiDependencyResolver
-        {
-            get { return new AutofacWebApiDependencyResolver(_container); }
-        }
-
-        public void OverrideRegistration<TInterface, TClass>() where TInterface : class where TClass : class, TInterface
-        {
-            _autofacContainerBuilder.RegisterType<TClass>().As<TInterface>().InstancePerLifetimeScope();
-        }
-
-        public void Build()
-        {
-            _container = _autofacContainerBuilder.Build();
-        }
-
-        public ILifetimeScope BeginLifetimeScope()
-        {
-            return _container.BeginLifetimeScope();
+            container.Register(Component.For<IEpisodesService>().ImplementedBy<EpisodesService>().LifestyleSingleton());
+            container.Register(Component.For<IPatientsService>().ImplementedBy<PatientsService>().LifestyleSingleton());
+            container.Register(Component.For<IDatabaseContext>().ImplementedBy<PatientContext>().LifestyleSingleton());
+    
+        
         }
     }
 }
