@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,18 +8,20 @@ using Moq;
 using RestApi.Controllers;
 using RestApi.Interfaces;
 using RestApi.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace RestApi.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class GetPatientTests
     {
         private Mock<IPatientsService> patientsService;
         private Mock<IEpisodesService> episodesService;
         private PatientsController patientsController;
+        
 
-        [SetUp]
-        public void SetUp()
+        [TestMethod]
+        public void GetPatientsTest()
         {
             episodesService = new Mock<IEpisodesService>();
             episodesService.Setup(service => service.GetEpisodes()).Returns(new List<Episode>()
@@ -101,44 +102,28 @@ namespace RestApi.UnitTests
             var route = config.Routes.MapHttpRoute("Default", "patients/{patientId}/episodes");
             patientsController = new PatientsController(patientsService.Object, episodesService.Object) { Request = request };
             patientsController.Request.Properties[HttpPropertyKeys.HttpConfigurationKey] = config;
-        }
 
-        [Test]
-        public void GetPatientsTest()
-        {
             var patientId = 0;
-            var result = patientsController.Get(patientId); 
-            Assert.NotNull(result.StatusCode);
+            var result = patientsController.Get(patientId);
+            Assert.IsNotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.NotFound);
             Assert.AreEqual(((System.Net.Http.ObjectContent)result.Content).Value, $"Patient not found with patientId :{patientId}.");
 
             patientId = 1;
             result = patientsController.Get(patientId);
-            Assert.NotNull(result.StatusCode);
+            Assert.IsNotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
             Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
-            
+
             patientId = 2;
             result = patientsController.Get(patientId);
-            Assert.NotNull(result.StatusCode);
+            Assert.IsNotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
             Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
-
-            patientId = 3;
-            result = patientsController.Get(patientId);
-            Assert.NotNull(result.StatusCode);
-            Assert.AreEqual(result.StatusCode, HttpStatusCode.OK);
-            Assert.AreEqual((((System.Net.Http.ObjectContent)result.Content).Value as Patient).PatientId, patientId);
-
-            patientId = 4;
-            result = patientsController.Get(patientId);
-            Assert.NotNull(result.StatusCode);
-            Assert.AreEqual(result.StatusCode, HttpStatusCode.NotFound);
-            Assert.AreEqual(((System.Net.Http.ObjectContent)result.Content).Value, $"Patient not found with patientId :{patientId}.");
 
             patientId = int.MinValue;
             result = patientsController.Get(patientId);
-            Assert.NotNull(result.StatusCode);
+            Assert.IsNotNull(result.StatusCode);
             Assert.AreEqual(result.StatusCode, HttpStatusCode.BadRequest);
         }
     }
